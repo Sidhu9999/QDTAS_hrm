@@ -1,7 +1,11 @@
 package com.qdtas.service.impl;
 import com.qdtas.entity.EmailVerification;
+import com.qdtas.entity.Leave;
 import com.qdtas.repository.EmailServiceRepository;
+import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,6 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import com.qdtas.utility.AppConstants;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -58,7 +63,34 @@ public class EmailService {
         }catch (MessagingException e){
             e.printStackTrace();
         }
+    }
 
+    public void sendLeaveRequestEmail(List<String> Memail, Leave lv) {
+       try {
 
+           Message message = ms.createMimeMessage();
+           message.setFrom(new InternetAddress("ODTAS"));
+
+           InternetAddress[] recipients = new InternetAddress[Memail.size()];
+           for (int i = 0; i < Memail.size(); i++) {
+               recipients[i] = new InternetAddress(Memail.get(i));
+           }
+           message.setRecipients(Message.RecipientType.TO, recipients);
+           message.setSubject("Leave Request from " + lv.getEmployee().getFirstName()+" "+lv.getEmployee().getLastName() );
+           message.setText("Dear Manager,\n\n"
+                   + "This is to inform you that " + lv.getEmployee().getFirstName()+" "+lv.getEmployee().getLastName() + " has requested leave.\n"
+                   + "Leave Details:\n"
+                   + "Start Date: " + lv.getStartDate() + "\n"
+                   + "End Date: " + lv.getEndDate() + "\n"
+                   + "Reason: " + lv.getReason() + "\n\n"
+                   + "Please take necessary actions accordingly.\n\n");
+
+           // Send message
+           Transport.send(message);
+           System.out.println("Leave notification email sent successfully to " + Memail);
+       } catch (MessagingException e) {
+           e.printStackTrace();
+           System.err.println("Failed to send leave notification email: " + e.getMessage());
+       }
     }
 }

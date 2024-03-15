@@ -35,4 +35,14 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "team_member_id"))
     private Set<User> team = new HashSet();
+
+
+    @JsonManagedReference
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "project_managers",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "manager_id"))
+    private Set<User> managers = new HashSet();
+
+
 }

@@ -2,6 +2,7 @@ package com.qdtas.service.impl;
 
 import com.qdtas.dto.LeaveDTO;
 import com.qdtas.entity.Leave;
+import com.qdtas.entity.Project;
 import com.qdtas.entity.User;
 import com.qdtas.exception.ResourceNotFoundException;
 import com.qdtas.repository.LeaveRepository;
@@ -14,7 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class LeaveServiceImpl implements LeaveService {
@@ -23,6 +28,14 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Autowired
     private UserService usr;
+    @Autowired
+    private EmailService ems;
+
+    @Override
+    public List<Leave> getLeaveByEmpId(Long id) {
+        return leaveRequestRepository.findAllByEmployeeId(id);
+
+    }
 
     public List<Leave> getAllLeaveRequests(int pgn, int size) {
         return leaveRequestRepository.findAll(   PageRequest.of(pgn, size, Sort.by(Sort.Direction.ASC, "startDate") )  )
@@ -38,7 +51,23 @@ public class LeaveServiceImpl implements LeaveService {
         l.setEndDate(leaveRequest.getEndDate());
         User u = usr.getById(empId);
         l.setEmployee(u);
-        return leaveRequestRepository.save(l);
+         Set<Project> projects = u.getProjects();
+         Set<User> managerList=new HashSet<>();
+         for(Project p:projects){
+          managerList.addAll(p.getManagers());
+         }
+         List<String> mEmails=new ArrayList<>();
+         for(User m:managerList){
+             mEmails.add(m.getEmail());
+         }
+
+         for (String e:mEmails){
+             System.out.println(e);
+         }
+        Leave save = leaveRequestRepository.save(l);
+        ems.sendLeaveRequestEmail(mEmails,save);
+         return save;
+
     }
 
     public Leave updateLeaveRequest(Long id, LeaveDTO updatedLeaveRequest) {

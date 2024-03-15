@@ -2,11 +2,9 @@ package com.qdtas.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.qdtas.utility.NonZero;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,7 +41,7 @@ public class Timesheet {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date;
 
-    @NotNull(message = "Note Should Not Be Null")
+    @NotBlank(message = "Note Should Not Be Null")
     private String note;
 
     @Hidden

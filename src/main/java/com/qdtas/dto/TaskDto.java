@@ -1,11 +1,8 @@
 package com.qdtas.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.qdtas.entity.User;
 import jakarta.persistence.JoinColumn;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,18 +16,19 @@ public class TaskDto {
 
     private Long id;
 
-    @NotNull(message="name should contains min 3 chars")
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must contain only alphabets")
+    @NotNull(message = "Name field should not be empty")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must contain only alphabets,Name field should not be empty")
     private String name;
 
-    @NotNull(message = "description should not be empty")
+    @NotEmpty(message = "description should not be empty")
     private String description;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="yyyy-mm-dd")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="yyyy-mm-dd")
+    //@DateTimeFormat(pattern = "yyyy-mm-dd")
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Due date must be in the format yyyy-MM-dd")
     private String dueDate;
 
     @NotNull(message="assignee cannot be empty")
-    @JoinColumn(name="assignee_id")
     private long assignee;
 
     private long empId;

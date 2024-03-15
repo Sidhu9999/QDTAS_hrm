@@ -17,6 +17,7 @@ public interface ProjectService {
     public Project getProjectById( long pId);
 
     public List<Project> searchProjectByName(String keyword, int pgn,int size);
+
     public Project assignEmployee(long userId,long pId);
 
     public Project assignEmployees(List<Long> employeeIds,long pId);
@@ -27,5 +28,12 @@ public interface ProjectService {
 
     public Project removeAll(List<Long> empIds,long pId);
 
+    public Project assignManager(long userId , long pId);
+
+    public Project assignManagers(List<Long> employeeIds,long pId);
+
+    public Project removeManager(long empId,long pId);
+
+    public Project removeManagers(List<Long> empIds,long pId);
 
 }

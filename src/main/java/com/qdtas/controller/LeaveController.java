@@ -37,7 +37,7 @@ public class LeaveController {
         return new ResponseEntity<>(l, HttpStatus.OK);
 
     }
-
+/*
     @Operation(
             description = "Create Leave Request",
             summary = "1. Create leave",
@@ -47,14 +47,15 @@ public class LeaveController {
                             responseCode = "201",
                             content = @io.swagger.v3.oas.annotations.media.Content
 
-                    ),
+                     ),
                     @ApiResponse(
                             description = "Bad Request",
                             responseCode = "400",
                             content = @io.swagger.v3.oas.annotations.media.Content
                     ),
             }
-    )
+    )*/
+    @Hidden
     @PostMapping("/create/{empId}")
     public ResponseEntity<?> createLeaveRequest(@Valid @RequestBody LeaveDTO leaveRequest,@PathVariable long empId) {
         return new ResponseEntity(leaveRequestService.createLeaveRequest(empId,leaveRequest), HttpStatus.CREATED);
@@ -130,7 +131,7 @@ public class LeaveController {
     }
 
     @Operation(
-            description = "Reject Leave Request (ADMIN only)",
+            description = "Get Leave ",
             summary = "Reject request (Admin)",
             responses = {
                     @ApiResponse(
@@ -149,5 +150,30 @@ public class LeaveController {
     @PostMapping("/reject/{leaveId}")
     public ResponseEntity<?> rejectLeaveRequest(@PathVariable Long leaveId) {
         return new ResponseEntity(leaveRequestService.rejectLeaveRequest(leaveId), HttpStatus.OK);
+    }
+
+
+
+    @Operation(
+            description = "Get All the Leaves by Employee Id",
+            summary = "Get All the Leaves by Employee Id",
+            responses = {
+                    @ApiResponse(
+                            description = "OK",
+                            responseCode = "200",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    ),
+            }
+    )
+    @GetMapping("/getAll/{empId}")
+    public ResponseEntity<?> getAllById(@PathVariable long empId){
+        List<Leave> leaveByEmpId = leaveRequestService.getLeaveByEmpId(empId);
+        return new ResponseEntity<>(leaveByEmpId , HttpStatus.OK);
     }
 }

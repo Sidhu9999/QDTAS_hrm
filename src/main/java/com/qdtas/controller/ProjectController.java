@@ -44,10 +44,10 @@ public class ProjectController {
             }
     )
     @PostMapping("/add")
-    public ResponseEntity<?> createProject(@Valid @RequestBody ProjectDTO pd){
+    public ResponseEntity<?> createProject(@Valid @RequestBody ProjectDTO pd) {
         try {
-            return new ResponseEntity(psr.addProject(pd),HttpStatus.CREATED);
-        }catch (Exception e){
+            return new ResponseEntity(psr.addProject(pd), HttpStatus.CREATED);
+        } catch (Exception e) {
             return new ResponseEntity(new JsonMessage("Something Went Wrong"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -70,10 +70,10 @@ public class ProjectController {
             }
     )
     @PostMapping("/update/{pId}")
-    public ResponseEntity<?> updateProject(@Valid @RequestBody ProjectDTO pd,@PathVariable long pId){
+    public ResponseEntity<?> updateProject(@Valid @RequestBody ProjectDTO pd, @PathVariable long pId) {
         try {
-            return new ResponseEntity(psr.updateProject(pd,pId),HttpStatus.OK);
-        }catch (Exception e){
+            return new ResponseEntity(psr.updateProject(pd, pId), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity(new JsonMessage("Something Went Wrong"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -97,11 +97,11 @@ public class ProjectController {
     )
     @PostMapping("/searchProject")
     public ResponseEntity<?> searchByName(@RequestParam("key") String keyword,
-                                          @RequestParam(value = "pgn",defaultValue = "1") int pgn,
-                                          @RequestParam(value = "sz" ,defaultValue = "10") int size){
-        pgn = pgn < 0 ? 0 : pgn-1;
+                                          @RequestParam(value = "pgn", defaultValue = "1") int pgn,
+                                          @RequestParam(value = "sz", defaultValue = "10") int size) {
+        pgn = pgn < 0 ? 0 : pgn - 1;
         size = size <= 0 ? 5 : size;
-        return new ResponseEntity( psr.searchProjectByName(keyword, pgn, size),HttpStatus.OK );
+        return new ResponseEntity(psr.searchProjectByName(keyword, pgn, size), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Assign employee", position = 1)
@@ -122,8 +122,8 @@ public class ProjectController {
             }
     )
     @PostMapping("/assignEmployee")
-    public ResponseEntity<?> assignEmp(@RequestParam(value = "empId",required = true) long empId,@RequestParam(value = "pId",required = true) long pId){
-        return new ResponseEntity<>(psr.assignEmployee(empId,pId),HttpStatus.OK);
+    public ResponseEntity<?> assignEmp(@RequestParam(value = "empId", required = true) long empId, @RequestParam(value = "pId", required = true) long pId) {
+        return new ResponseEntity<>(psr.assignEmployee(empId, pId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Assign multiple employees", position = 1)
@@ -144,8 +144,8 @@ public class ProjectController {
             }
     )
     @PostMapping("/assignAll")
-    public ResponseEntity<?> assignAll(@RequestParam("empIds") List<Long> empIds, @RequestParam(value = "pId",required = true) long pId){
-        return new ResponseEntity<>(psr.assignEmployees(empIds,pId),HttpStatus.OK);
+    public ResponseEntity<?> assignAll(@RequestParam("empIds") List<Long> empIds, @RequestParam(value = "pId", required = true) long pId) {
+        return new ResponseEntity<>(psr.assignEmployees(empIds, pId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "get all projects", position = 1)
@@ -166,11 +166,11 @@ public class ProjectController {
             }
     )
     @PostMapping("/getAllProjects")
-    public ResponseEntity<?> getAll(@RequestParam(value = "pgn",defaultValue = "1") int pgn,
-                                    @RequestParam(value = "sz" ,defaultValue = "10") int size){
-        pgn = pgn < 0 ? 0 : pgn-1;
+    public ResponseEntity<?> getAll(@RequestParam(value = "pgn", defaultValue = "1") int pgn,
+                                    @RequestParam(value = "sz", defaultValue = "10") int size) {
+        pgn = pgn < 0 ? 0 : pgn - 1;
         size = size <= 0 ? 5 : size;
-        return new ResponseEntity<>(psr.getAllProjects(pgn, size),HttpStatus.OK);
+        return new ResponseEntity<>(psr.getAllProjects(pgn, size), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Remove employee from project", position = 1)
@@ -191,8 +191,8 @@ public class ProjectController {
             }
     )
     @PostMapping("/removeEmployee")
-    public ResponseEntity<?> remove(@RequestParam(value = "empId",required = true) long empId,@RequestParam(value = "pId",required = true) long pId){
-        return new ResponseEntity<>(psr.removeEmployee(empId,pId),HttpStatus.OK);
+    public ResponseEntity<?> remove(@RequestParam(value = "empId", required = true) long empId, @RequestParam(value = "pId", required = true) long pId) {
+        return new ResponseEntity<>(psr.removeEmployee(empId, pId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Remove multiple employees from project", position = 1)
@@ -213,7 +213,107 @@ public class ProjectController {
             }
     )
     @PostMapping("/removeAll")
-    public ResponseEntity<?> removeAll(@RequestParam("empIds") List<Long> empIds, @RequestParam(value = "pId",required = true) long pId){
-        return new ResponseEntity<>(psr.removeAll(empIds,pId),HttpStatus.OK);
+    public ResponseEntity<?> removeAll(@RequestParam("empIds") List<Long> empIds, @RequestParam(value = "pId", required = true) long pId) {
+        return new ResponseEntity<>(psr.removeAll(empIds, pId), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Assigns Manager to the Project", position = 1)
+    @Operation(
+            description = "Assigns Manager to the Project",
+            summary = "9.Assigns Manager to the Project",
+            responses = {
+                    @ApiResponse(
+                            description = "OK",
+                            responseCode = "200",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    )
+            }
+    )
+    @PostMapping("/assignManager")
+    public ResponseEntity<?> assignManager(@RequestParam( value = "pId", required = true) long pId, @RequestParam(value = "eId", required = true) long eId) {
+        Project project = psr.assignManager(eId, pId);
+        return new ResponseEntity<>(project, HttpStatus.OK);
+    }
+
+
+    @ApiOperation(value = "Assigns Multiple Managers to the Project", position = 1)
+    @Operation(
+            description = "Assigns Multiple Managers to the Project",
+            summary = "10.Assigns Multiple Managers to the Project",
+            responses = {
+                    @ApiResponse(
+                            description = "OK",
+                            responseCode = "200",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    )
+            }
+    )
+
+    @PostMapping("/assignManagers")
+    public ResponseEntity<?> assignManagers(@RequestParam(value ="pId", required = true) long pId , @RequestParam(value = "managerIds" , required = true) List<Long> managerIds){
+        Project project = psr.assignManagers(managerIds, pId);
+        return new ResponseEntity<>(project , HttpStatus.OK);
+    }
+
+
+
+    @ApiOperation(value = "Remove Manager from the Project", position = 1)
+    @Operation(
+            description = "Remove Manager from the Project",
+            summary = "11.Remove Manager from the Project",
+            responses = {
+                    @ApiResponse(
+                            description = "OK",
+                            responseCode = "200",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    )
+            }
+    )
+
+    @DeleteMapping("/removeManager")
+    public ResponseEntity<?> removeManager(@RequestParam(value = "pId" , required = true) long pId , @RequestParam(value = "empId" , required = true) long empId){
+        Project project = psr.removeManager(empId, pId);
+        return new ResponseEntity<>(project , HttpStatus.OK);
+    }
+
+
+
+    @ApiOperation(value = "Remove Multiple Managers from the Project", position = 1)
+    @Operation(
+            description = "Remove Multiple Managers from the Project",
+            summary = "12.Remove Multiple Managers from the Project",
+            responses = {
+                    @ApiResponse(
+                            description = "OK",
+                            responseCode = "200",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400",
+                            content = @io.swagger.v3.oas.annotations.media.Content
+                    )
+            }
+    )
+
+    @DeleteMapping("/removeManagers")
+    public ResponseEntity<?> removeManagers(@RequestParam(value = "pId" , required = true) long pID , @RequestParam(value = "empIds" , required = true) List<Long> empIds){
+        Project project = psr.removeManagers(empIds, pID);
+        return new ResponseEntity<>(project , HttpStatus.OK);
     }
 }
