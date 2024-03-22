@@ -60,6 +60,7 @@ public class LeaveController {
     public ResponseEntity<?> createLeaveRequest(@Valid @RequestBody LeaveDTO leaveRequest,@PathVariable long empId) {
         return new ResponseEntity(leaveRequestService.createLeaveRequest(empId,leaveRequest), HttpStatus.CREATED);
     }
+/*
 
     @Operation(
             description = "Update Leave Request",
@@ -83,6 +84,7 @@ public class LeaveController {
         return new ResponseEntity(leaveRequestService.updateLeaveRequest(LeaveId, updatedLeaveRequest), HttpStatus.OK);
 
     }
+*/
 
     @Operation(
             description = "Delete Leave Request",
